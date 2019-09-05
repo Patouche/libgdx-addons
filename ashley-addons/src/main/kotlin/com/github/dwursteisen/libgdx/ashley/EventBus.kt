@@ -26,6 +26,8 @@ class EventData(var event: Int = Int.MIN_VALUE, var target: Entity? = null, var 
 
 data class EventTimer(var timer: Float = 0f, val event: Event, val data: EventData)
 
+
+
 /**
  * Simple Event bus.
  *
@@ -37,6 +39,16 @@ class EventBus(private val eventMapper: Map<Int, String> = emptyMap()) {
 
     private val pool: Pool<EventData> = object : Pool<EventData>() {
         override fun newObject(): EventData = EventData()
+    }
+
+    @DslMarker
+    annotation class RegisterListenerDsl
+
+    @RegisterListenerDsl
+    class Listeners : ArrayList<Pair<List<Event>, (Event, EventData) -> Unit>>() {
+        fun onEvents(vararg events: Event, function: (Event, EventData) -> Unit) {
+            this.add(events.toList() to function)
+        }
     }
 
     class EventInputProcessor(private val bus: EventBus) : InputAdapter() {
@@ -100,7 +112,7 @@ class EventBus(private val eventMapper: Map<Int, String> = emptyMap()) {
         Gdx.input.inputProcessor = null
     }
 
-    private var listeners: MutableMap<Event, List<EventListener>> = mutableMapOf()
+    internal var listeners: MutableMap<Event, List<EventListener>> = mutableMapOf()
 
     private var emitter: MutableList<Pair<Event, EventData>> = mutableListOf()
     private var emitterMirror: MutableList<Pair<Event, EventData>> = mutableListOf()
@@ -152,6 +164,20 @@ class EventBus(private val eventMapper: Map<Int, String> = emptyMap()) {
             val lst = listeners[it] ?: emptyList()
             listeners[it] = lst + eventListener
         }
+    }
+
+    fun registers(block: Listeners.() -> Unit): EventBus {
+        Listeners().apply(block).toMap().forEach { (events, eventListener) ->
+            this.register(
+                    eventListener = object : EventListener {
+                        override fun onEvent(event: Event, eventData: EventData) {
+                            eventListener.invoke(event, eventData)
+                        }
+                    },
+                    events = *events.toIntArray()
+            )
+        }
+        return this
     }
 
     fun update(delta: Float) {
