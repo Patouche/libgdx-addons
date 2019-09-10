@@ -193,7 +193,7 @@ include::samples/core/src/main/kotlin/step4/Components.kt[]
 
 Other components are provided by `ashley-addons`: `Position`, `Size`, …
 
-IMPORTANT: Do not forget to set a size! Otherwise your entity will have a width and heigh
+IMPORTANT: Do not forget to set a size! Otherwise your entity will have a width and height
 of 0 so will be invisible.
 
 The player can be moved by detecting if some keys where pressed, like left, right, …

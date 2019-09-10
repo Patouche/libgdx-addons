@@ -22,6 +22,25 @@ interface RenderStrategy {
 
 inline fun <reified T : Component> RenderStrategy.get(): ComponentMapper<T> = ComponentMapper.getFor(T::class.java)
 
+fun zTexturedStrategy(): RenderStrategy {
+    return object : TexturedStrategy() {
+
+        private val zLevelMapper = get<ZLevel>()
+
+        override fun zLevel(entity: Entity, delta: Float): Float {
+            return zLevelMapper.get(entity).value
+        }
+    }
+}
+
+fun texturedStrategy(block: (Entity, Float) -> Float): RenderStrategy {
+    return object : TexturedStrategy() {
+        override fun zLevel(entity: Entity, delta: Float): Float {
+            return block.invoke(entity, delta)
+        }
+    }
+}
+
 abstract class TexturedStrategy : RenderStrategy {
     private val renderMapper = get<Textured>()
     private val position = get<Position>()

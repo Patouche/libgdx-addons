@@ -75,10 +75,11 @@ class Animated(
  * Hold the information that this entity should be rendered and with which strategy.
  * The [RenderSystem] will use this strategy to render the entity on screen.
  */
-class Render(var strategy: Int) : Component
+class Render(var strategy: Int = 0) : Component
 
 data class Position(val value: Vector2 = Vector2()) : Component
 data class Size(val value: Vector2 = Vector2()) : Component
+data class ZLevel(var value: Float = 0F) : Component
 data class Direction(val value: Vector2 = Vector2()) : Component
 
 /**

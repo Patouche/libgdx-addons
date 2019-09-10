@@ -2,16 +2,16 @@ package com.github.dwursteisen.libgdx.ashley
 
 import com.badlogic.ashley.core.*
 
-inline fun <reified T : Component> PooledEngine.createComponent(): T = this.createComponent(T::class.java)
+inline fun <reified T : Component> Engine.createComponent(): T = this.createComponent(T::class.java)
 
-inline fun <reified T : Component> PooledEngine.createComponentWith(block: T.() -> Unit): T {
+inline fun <reified T : Component> Engine.createComponentWith(block: T.() -> Unit): T {
     val component = this.createComponent(T::class.java)
     block.invoke(component)
     return component
 }
 
 
-fun PooledEngine.addEntity(builder: Entity.() -> Unit): Entity {
+fun Engine.addEntity(builder: Entity.() -> Unit): Entity {
     val entity = this.createEntity()
     builder(entity)
     this.addEntity(entity)
