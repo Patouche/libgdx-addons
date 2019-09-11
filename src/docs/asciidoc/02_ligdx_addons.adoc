@@ -16,6 +16,12 @@ TIP: TODO
 
 === core-addons
 
+==== ServiceLocator
+
+Dependencies injection doesn't exist in LibGDX. But it's sometime very useful to retrieve business logic service easyly
+
+ServiceLocator and the locate() delegate help you for that !
+
 TIP: TODO
 
 === libgdx-test
