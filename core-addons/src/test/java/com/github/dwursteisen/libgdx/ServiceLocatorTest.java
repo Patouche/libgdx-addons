@@ -15,7 +15,8 @@ public class ServiceLocatorTest {
         Random fromServiceLocator = ServiceLocator.INSTANCE.get(Random.class);
 
         Assert.assertSame(random, fromServiceLocator);
-
     }
+
+
 
 }
