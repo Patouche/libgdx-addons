@@ -17,4 +17,10 @@ open class AssetsPluginExtension(project: Project) {
      */
     val assetsClass = project.createProperty<File>()
         .value(project.buildDir.resolve("generated/Assets.kt"))
+
+    /**
+     * Which extensions should be included in the result Assets object.
+     */
+    val includeExts = project.createProperty<List<String>>()
+        .value(emptyList())
 }

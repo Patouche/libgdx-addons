@@ -2,13 +2,16 @@ package com.github.dwursteisen.libgdx.assets
 
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
+import org.hamcrest.BaseMatcher
+import org.hamcrest.CoreMatchers
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import java.io.File
 
-class AssetsPluginTest {
+class KotlinAssetsPluginTest {
 
     @Rule
     @JvmField
@@ -68,14 +71,15 @@ configure<AssetsPluginExtension> {
         asset.writeText("hello world")
 
         val result = GradleRunner.create()
-            .withProjectDir(temporaryFolder.root)
-            .withArguments("assets")
-            .withPluginClasspath()
-            .build()
+                .withProjectDir(temporaryFolder.root)
+                .withArguments("assets")
+                .withPluginClasspath()
+                .build()
 
         assert(result.task(":assets")?.outcome == TaskOutcome.SUCCESS)
         val generated = File(temporaryFolder.root, "build/generated/NewAssets.kt")
         assert(generated.isFile)
         assert(generated.readText().contains("example.txt"))
     }
+
 }

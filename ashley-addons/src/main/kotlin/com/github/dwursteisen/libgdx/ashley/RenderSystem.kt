@@ -41,6 +41,16 @@ fun texturedStrategy(block: (Entity, Float) -> Float): RenderStrategy {
     }
 }
 
+
+abstract class ZRenderStrategy : RenderStrategy {
+
+    private val zLevelMapper = get<ZLevel>()
+
+    override fun zLevel(entity: Entity, delta: Float): Float {
+        return zLevelMapper.get(entity).value
+    }
+}
+
 abstract class TexturedStrategy : RenderStrategy {
     private val renderMapper = get<Textured>()
     private val position = get<Position>()

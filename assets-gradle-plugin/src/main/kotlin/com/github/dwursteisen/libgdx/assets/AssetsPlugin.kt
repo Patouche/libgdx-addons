@@ -13,6 +13,7 @@ class AssetsPlugin : Plugin<Project> {
         project.tasks.register("assets", AssetsTask::class.java) { task ->
             task.assetsDirectory.set(exts.assetsDirectory)
             task.assetsClass.set(exts.assetsClass)
+            task.includeExts.set(exts.includeExts)
         }
 
         project.plugins.withType(JavaPlugin::class.java) {

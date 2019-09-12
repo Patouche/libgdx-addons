@@ -41,11 +41,11 @@ val NO_TEXTURE = TextureRegion()
  * The offset can be use if you want to apply an offset when rendering your
  * texture.
  */
-class Textured(
-    var texture: TextureRegion = NO_TEXTURE,
-    val offset: Vector2 = Vector2(),
-    var hFlip: Boolean = false,
-    var alpha: Float = 1f
+data class Textured(
+        var texture: TextureRegion = NO_TEXTURE,
+        val offset: Vector2 = Vector2(),
+        var hFlip: Boolean = false,
+        var alpha: Float = 1f
 ) : Component
 
 val NO_ANIMATION = Animation<TextureRegion>(0f, emptyGdxArray())
@@ -69,13 +69,15 @@ class Animated(
     fun finishAnimation() {
         time = animation.animationDuration
     }
+
+    override fun toString() = "Animated(time=$time, animation=${animation.keyFrames.map { it.texture }})"
 }
 
 /**
  * Hold the information that this entity should be rendered and with which strategy.
  * The [RenderSystem] will use this strategy to render the entity on screen.
  */
-class Render(var strategy: Int = 0) : Component
+data class Render(var strategy: Int = 0) : Component
 
 data class Position(val value: Vector2 = Vector2()) : Component
 data class Size(val value: Vector2 = Vector2()) : Component
@@ -90,8 +92,8 @@ data class Direction(val value: Vector2 = Vector2()) : Component
  * @property origin: origin of the rotation.
  */
 data class Rotation(
-    var degree: Float = 0f,
-    val origin: Vector2 = Vector2()
+        var degree: Float = 0f,
+        val origin: Vector2 = Vector2()
 ) : Component
 
 class MapLayerComponent(var zLevel: Int, var layer: MapLayer) : Component

@@ -6,6 +6,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.FileCollection
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
@@ -24,6 +25,9 @@ open class AssetsTask : DefaultTask() {
     @OutputFile
     val assetsClass = project.createProperty<File>()
 
+    @Input
+    val includeExts = project.createProperty<List<String>>()
+
     @TaskAction
     fun generate() {
         val file = FileSpec.builder("", assetsClass.get().nameWithoutExtension)
@@ -39,11 +43,12 @@ open class AssetsTask : DefaultTask() {
     }
 
     private fun appendDirectory(current: File, base: File, builder: TypeSpec.Builder, prefix: String = "") {
+        val exts = includeExts.getOrElse(emptyList())
         if (current.isDirectory) {
             current.listFiles()?.forEach {
                 appendDirectory(it, base, builder, prefix + current.nameWithoutExtension + "_")
             }
-        } else {
+        } else if (exts.isEmpty() or exts.contains(current.extension)) {
             builder.addProperty(
                 PropertySpec.builder(prefix + current.name.replace(".", "_"), String::class)
                     .initializer("%S", current.relativeTo(base).path)

@@ -2,7 +2,7 @@ object Version {
     val ashley = "1.7.3"
     val assertJ = "3.8.0"
     val android = "3.4.0"
-    val mockito = "2.8.47"
+    val mockito = "3.0.0"
     val ktx = "1.9.9-b1"
     val gdx = "1.9.9"
     val junit = "4.12"
