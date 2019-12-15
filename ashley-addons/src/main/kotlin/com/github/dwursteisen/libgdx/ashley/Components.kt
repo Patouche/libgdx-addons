@@ -57,8 +57,9 @@ val NO_ANIMATION = Animation<TextureRegion>(0f, emptyGdxArray())
  * To update the time of the animation, the [AnimationSystem] needs to be added to the engine.
  */
 class Animated(
-    animation: Animation<TextureRegion> = NO_ANIMATION,
-    var time: Float = 0f
+        animation: Animation<TextureRegion> = NO_ANIMATION,
+        var loop: Boolean = false,
+        var time: Float = 0f
 ) : Component {
     var animation: Animation<TextureRegion> = animation
         set(value) {
