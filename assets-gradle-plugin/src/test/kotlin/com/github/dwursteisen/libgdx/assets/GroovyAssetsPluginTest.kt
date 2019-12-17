@@ -58,7 +58,7 @@ assets {
 
 
         buildFile.writeText("""
-// tag::configuration[]
+// tag::configuration-2[]
 plugins {
     id 'assets'
 }
@@ -66,7 +66,7 @@ plugins {
 assets {
      includeExts = ["inc", "txt"]
 }
-// end::configuration[]
+// end::configuration-2[]
         """.trimIndent())
 
         val tmpFolder = temporaryFolder.newFolder("src", "main", "assets")
@@ -88,5 +88,37 @@ assets {
         Assert.assertThat(generated.readText(), CoreMatchers.not(CoreMatchers.containsString("exclude.out")))
     }
 
+    @Test
+    fun `it should create a Assets object with the right package`() {
+
+
+        buildFile.writeText("""
+// tag::configuration-3[]
+plugins {
+    id 'assets'
+}
+
+assets {
+     assetsPackage = "com.example"
+     includeExts = ["inc"]
+}
+// end::configuration-3[]
+        """.trimIndent())
+
+        val tmpFolder = temporaryFolder.newFolder("src", "main", "assets")
+        File(tmpFolder, "include.inc").writeText("hello world")
+
+        val result = GradleRunner.create()
+                .withProjectDir(temporaryFolder.root)
+                .withArguments("assets")
+                .withPluginClasspath()
+                .build()
+
+        assert(result.task(":assets")?.outcome == TaskOutcome.SUCCESS)
+        val generated = File(temporaryFolder.root, "build/generated/com/example/Assets.kt")
+        assert(generated.isFile)
+        assert(generated.readText().contains("include.inc"))
+        assert(generated.readText().contains("package com.example"))
+    }
 
 }

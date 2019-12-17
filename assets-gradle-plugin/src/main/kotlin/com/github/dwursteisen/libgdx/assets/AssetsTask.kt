@@ -1,5 +1,6 @@
 package com.github.dwursteisen.libgdx.assets
 
+import com.github.dwursteisen.libgdx.gradle.createListProperty
 import com.github.dwursteisen.libgdx.gradle.createProperty
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.PropertySpec
@@ -26,11 +27,14 @@ open class AssetsTask : DefaultTask() {
     val assetsClass = project.createProperty<File>()
 
     @Input
-    val includeExts = project.createProperty<List<String>>()
+    val includeExts = project.createListProperty<String>()
+
+    @Input
+    val assetsPackage = project.createProperty<String>()
 
     @TaskAction
     fun generate() {
-        val file = FileSpec.builder("", assetsClass.get().nameWithoutExtension)
+        val file = FileSpec.builder(assetsPackage.get(), assetsClass.get().nameWithoutExtension)
         val builder = TypeSpec.objectBuilder(assetsClass.get().nameWithoutExtension)
 
         assetsDirectory.get().files.forEach {
@@ -50,7 +54,8 @@ open class AssetsTask : DefaultTask() {
             }
         } else if (exts.isEmpty() or exts.contains(current.extension)) {
             builder.addProperty(
-                PropertySpec.builder(prefix + current.name.replace(".", "_"), String::class)
+                PropertySpec.builder(prefix + current.name.replace(".", "_")
+                        .replace("-", "_"), String::class)
                     .initializer("%S", current.relativeTo(base).path)
                     .build()
             )

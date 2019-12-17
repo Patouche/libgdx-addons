@@ -1,8 +1,10 @@
 package com.github.dwursteisen.libgdx.assets
 
+import com.github.dwursteisen.libgdx.gradle.createListProperty
 import com.github.dwursteisen.libgdx.gradle.createProperty
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
+import org.gradle.internal.impldep.org.mozilla.javascript.ast.ObjectProperty
 import java.io.File
 
 open class AssetsPluginExtension(project: Project) {
@@ -13,6 +15,12 @@ open class AssetsPluginExtension(project: Project) {
         .value(project.files("src/main/assets"))
 
     /**
+     * Which package to create for Assets objects.
+     */
+    val assetsPackage = project.createProperty<String>()
+            .value("")
+
+    /**
      * Which class (aka Assets object) will reference all assets name.
      */
     val assetsClass = project.createProperty<File>()
@@ -21,6 +29,6 @@ open class AssetsPluginExtension(project: Project) {
     /**
      * Which extensions should be included in the result Assets object.
      */
-    val includeExts = project.createProperty<List<String>>()
-        .value(emptyList())
+    val includeExts = project.createListProperty<String>()
+            .empty()
 }

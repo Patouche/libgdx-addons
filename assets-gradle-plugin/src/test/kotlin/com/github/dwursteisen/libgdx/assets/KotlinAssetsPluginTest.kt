@@ -82,4 +82,39 @@ configure<AssetsPluginExtension> {
         assert(generated.readText().contains("example.txt"))
     }
 
+    @Test
+    fun `it should create a Assets object with the right package`() {
+        buildFile.writeText("""
+// tag::configuration[]
+import com.github.dwursteisen.libgdx.assets.AssetsPlugin
+import com.github.dwursteisen.libgdx.assets.AssetsPluginExtension
+            
+plugins {
+    id("assets")
+}
+apply<AssetsPlugin>()
+
+configure<AssetsPluginExtension> {
+    assetsPackage.set("com.example")
+    assetsClass.set(project.buildDir.resolve("generated/Assets.kt"))
+}
+// end::configuration[]
+        """.trimIndent())
+
+        val asset = File(temporaryFolder.newFolder("src", "main", "assets"), "example.txt")
+        asset.writeText("hello world")
+
+        val result = GradleRunner.create()
+                .withProjectDir(temporaryFolder.root)
+                .withArguments("assets")
+                .withPluginClasspath()
+                .build()
+
+        assert(result.task(":assets")?.outcome == TaskOutcome.SUCCESS)
+        val generated = File(temporaryFolder.root, "build/generated/com/example/Assets.kt")
+        assert(generated.isFile)
+        assert(generated.readText().contains("example.txt"))
+        assert(generated.readText().contains("package com.example"))
+    }
+
 }
